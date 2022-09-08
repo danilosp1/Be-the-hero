@@ -23,5 +23,18 @@ module.exports = {
     })
 
     return response.json({ id });
+  },
+
+  async delete(request, response){
+    const { id } = request.params;
+
+    try {
+      await connection('incidents')
+        .where('ong_id', id).delete();
+      await connection('ongs').where('id', id).delete();
+    } catch (error) {
+      return response.status(401).json({ error: 'Operation not completed.' });
+    }
+    return response.status(204).send();
   }
 };
